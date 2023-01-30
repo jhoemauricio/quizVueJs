@@ -11,7 +11,7 @@
       <input type="radio" name="options" value="false">
       <label>False</label><br><button class="send" type="button">Send</button>
 
-      
+
 
 
   
@@ -24,6 +24,11 @@
 
 export default {
   name: 'App',
+  created(){
+    this.axios.get("https://opentdb.com/api.php?amount=1&category=18").then((response) => {
+    console.log(response.data.results[0])
+})
+  }
 
 }
 
