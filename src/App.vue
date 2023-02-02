@@ -1,8 +1,13 @@
 <template>
  <div>
-    <h1>Microphones can ve used not only to pick up sound, but also
-      to string to project sound similar to a spekaer.
-    </h1>
+  <!--Como utiliza componentes é necessário utilizar o this e em seguida
+  a propriedade-->
+    <!-- <h1>{{ this.question }}
+    </h1> -->
+
+    <!--Se possuir aspas ou qualquer outra entidade html vindo da API ela irá
+    transformar em texto através do v-html-->
+    <h1 v-html="this.question"></h1>
 
 
       <input type="radio" name="options" value="true">
@@ -29,12 +34,34 @@ export default {
   //retorna o objeto com as propriedades de data
   data(){
 
+    return {
+      question: undefined,
+      incorrectAnswers: undefined,
+      correctAnswer: undefined
+    }
+
+  },
+
+  computed: {
+
+    answers(){
+      var answers = JSON.parse(JSON.stringify(this.incorrectAnswers));
+      // answers.push(this.correctAnswer);
+      answers.splice(Math.round(Math.random() * answers.length), 0, this.correctAnswer);
+
+      return answers;
+    }
+
+
   },
 
   created(){
     this.axios.get("https://opentdb.com/api.php?amount=1&category=18").then((response) => {
+      this.question = response.data.results[0].question;
+      this.incorrectAnswers = response.data.results[0].incorrect_answers;
+      this.correctAnswer = response.data.results[0].correct_answer;
     console.log(response.data.results[0])
-})
+});
   }
 
 }
