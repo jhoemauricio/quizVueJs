@@ -86,10 +86,10 @@ export default {
       } else {
 
         if (this.chosen_answer == this.correctAnswer) {
-          alert('You got it right!');
+          alert('You got it right! Você acertou');
 
         } else {
-          alert('You got it wrong!');
+          alert('You got it wrong! Você errou');
         }
 
       }
