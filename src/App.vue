@@ -1,26 +1,46 @@
 <template>
- <div>
-  <!--Como utiliza componentes é necessário utilizar o this e em seguida
+  <div>
+    <!--Como utiliza componentes é necessário utilizar o this e em seguida
   a propriedade-->
     <!-- <h1>{{ this.question }}
     </h1> -->
 
+    <template v-if="this.question">
+
+      <h1 v-html="this.question"></h1>
+
+      <template v-for="(answer, index) in this.answers" v-bind:key="index">
+
+        <input type="radio" name="options" :value="answer" v-model="this.chosen_answer">
+        <label v-html="answer"></label><br>
+
+
+
+      </template>
+
+      <button @click="this.submitAnswer()" class="send" type="button">Send</button>
+    </template>
+
+
+
     <!--Se possuir aspas ou qualquer outra entidade html vindo da API ela irá
     transformar em texto através do v-html-->
-    <h1 v-html="this.question"></h1>
+    <!-- <h1 v-html="this.question"></h1>
+
+      <template v-for="(answer, index) in this.answers" v-bind:key="index">
+
+          <input type="radio" name="options" value="answer">
+          <label v-html="answer"></label><br>
+
+      
+
+      </template>
+    -->
 
 
-      <input type="radio" name="options" value="true">
-      <label>True</label><br>
-
-      <input type="radio" name="options" value="false">
-      <label>False</label><br><button class="send" type="button">Send</button>
 
 
-
-
-  
- </div>
+  </div>
 
 </template>
 
@@ -32,19 +52,20 @@ export default {
   name: 'App',
 
   //retorna o objeto com as propriedades de data
-  data(){
+  data() {
 
     return {
       question: undefined,
       incorrectAnswers: undefined,
-      correctAnswer: undefined
+      correctAnswer: undefined,
+      chosen_answer: undefined
     }
 
   },
 
   computed: {
 
-    answers(){
+    answers() {
       var answers = JSON.parse(JSON.stringify(this.incorrectAnswers));
       // answers.push(this.correctAnswer);
       answers.splice(Math.round(Math.random() * answers.length), 0, this.correctAnswer);
@@ -55,13 +76,34 @@ export default {
 
   },
 
-  created(){
+
+  methods: {
+    submitAnswer() {
+      if (!this.chosen_answer) {
+
+        alert('Pick one of the options');
+
+      } else {
+
+        if (this.chosen_answer == this.correctAnswer) {
+          alert('You got it right!');
+
+        } else {
+          alert('You got it wrong!');
+        }
+
+      }
+
+    }
+  },
+
+  created() {
     this.axios.get("https://opentdb.com/api.php?amount=1&category=18").then((response) => {
       this.question = response.data.results[0].question;
       this.incorrectAnswers = response.data.results[0].incorrect_answers;
       this.correctAnswer = response.data.results[0].correct_answer;
-    console.log(response.data.results[0])
-});
+      console.log(response.data.results[0])
+    });
   }
 
 }
@@ -80,7 +122,7 @@ export default {
   margin-top: 60px auto;
   max-width: 960px;
 
-  input[type=radio]{
+  input[type=radio] {
     margin: 12px 4px;
   }
 
@@ -96,7 +138,7 @@ export default {
   }
 }
 
-#app input[type=radio]{
-    margin: 12px 4px;
-  }
+#app input[type=radio] {
+  margin: 12px 4px;
+}
 </style>
